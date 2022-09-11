@@ -9,13 +9,16 @@ import (
 func TestSink(t *testing.T) {
 	config := zap.NewProductionConfig()
 
-	config.OutputPaths = []string{"dd://unused"}
-	logger, _ := config.Build()
+	config.OutputPaths = []string{"dd://us5.datadoghq.com/test-service?source=test&hostname=local"}
+	logger, err := config.Build()
+	if err != nil {
+		panic(err)
+	}
 	defer logger.Sync()
 
-	logger.Info("failed to fetch URL",
+	logger.Info("crop service name",
 		// Structured context as strongly typed Field values.
-		zap.String("url", "hi"),
+		zap.String("event", "event-name"),
 		zap.Int("attempt", 3),
 		zap.Duration("backoff", time.Second),
 	)
